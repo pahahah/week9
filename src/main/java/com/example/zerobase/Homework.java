@@ -2,6 +2,7 @@ package com.example.zerobase;
 
 import com.example.zerobase.domain.ZerobaseCourse;
 import com.example.zerobase.domain.ZerobaseCourseRepository;
+import com.example.zerobase.domain.ZerobaseCourseStatus;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
@@ -19,37 +20,42 @@ public class Homework {
         // TODO: id 가 일치하며, hidden = false 인 강의만 조회되어야 함
 
         ZerobaseCourse zerobaseCourse = repository.findById(id);
-        if(zerobaseCourse == null){
-            return Optional.empty();
-        }
-        if(!zerobaseCourse.isHidden()){
+
+        if (zerobaseCourse != null && !zerobaseCourse.isHidden()) {
             return Optional.of(zerobaseCourse);
         }
+
         return Optional.empty();
     }
 
-    public List<ZerobaseCourse> getZerobaseCourse(String status) {
+    public List<ZerobaseCourse> getZerobaseCourseListWithStatus(ZerobaseCourseStatus status) {
         // TODO: status가 일치하고, hidden = false 인 강의들이 조회되어야 함
+
         List<ZerobaseCourse> result = new ArrayList<>();
-        List<ZerobaseCourse> zerobaseCourseList = repository.findAll();
-        for(ZerobaseCourse course: zerobaseCourseList){
-            if(course.getStatus().equals(status) && !course.isHidden()){
+        List<ZerobaseCourse> courseList = repository.findAll();
+
+        for (ZerobaseCourse course : courseList) {
+            if (course.getStatus().equals(status) && !course.isHidden()) {
                 result.add(course);
             }
         }
+
         return result;
     }
 
-    public List<ZerobaseCourse> getOpenZerobaseCourse(LocalDate targetDt) {
+    public List<ZerobaseCourse> getOpenZerobaseCourseList(LocalDate targetDt) {
         // TODO: status = "OPEN" 이고, hidden = false 이며,
         //  startAt <= targetDt && targetDt <= endAt 인 강의만 조회되어야함.
+
         List<ZerobaseCourse> result = new ArrayList<>();
-        List<ZerobaseCourse> zerobaseCourseList = getZerobaseCourse("OPEN");
-        for(ZerobaseCourse course: zerobaseCourseList){
-            if(course.getStartAt().isBefore(targetDt) && course.getEndAt().isAfter(targetDt)) {
+        List<ZerobaseCourse> courseList = getZerobaseCourseListWithStatus(ZerobaseCourseStatus.OPEN);
+
+        for (ZerobaseCourse course : courseList) {
+            if (course.getStartAt().isBefore(targetDt) && course.getEndAt().isAfter(targetDt)) {
                 result.add(course);
             }
         }
+
         return result;
     }
 }

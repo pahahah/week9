@@ -13,7 +13,7 @@ public class ZerobaseCourse {
 
     private String logo;
 
-    private String status;
+    private ZerobaseCourseStatus status;
 
     private LocalDate startAt;
 
@@ -22,7 +22,7 @@ public class ZerobaseCourse {
     private boolean hidden;
 
     @Builder
-    public ZerobaseCourse(Long id, String name, String status, LocalDate startAt, LocalDate endAt, boolean hidden) {
+    public ZerobaseCourse(Long id, String name, ZerobaseCourseStatus status, LocalDate startAt, LocalDate endAt, boolean hidden) {
         this.id = id;
         this.name = name;
         this.status = status;

@@ -2,6 +2,7 @@ package com.example.zerobase;
 
 import com.example.zerobase.domain.ZerobaseCourse;
 import com.example.zerobase.domain.ZerobaseCourseMockRepository;
+import com.example.zerobase.domain.ZerobaseCourseStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,21 +22,21 @@ class HomeworkTest {
     @Test
     @DisplayName("IN_PROGRESS 상태의 강의가 모두 조회된다.")
     public void getCourse__IN_PROGRESS() {
-        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourse("IN_PROGRESS");
+        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourseListWithStatus(ZerobaseCourseStatus.IN_PROGRESS);
         assertThat(inProgressMockList.size()).isEqualTo(2L);
     }
 
     @Test
     @DisplayName("CLOSE 상태의 강의가 모두 조회된다.")
     public void getCourse__CLOSE() {
-        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourse("CLOSE");
+        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourseListWithStatus(ZerobaseCourseStatus.CLOSE);
         assertThat(inProgressMockList.size()).isEqualTo(1L);
     }
 
     @Test
     @DisplayName("OPEN 상태의 강의가 모두 조회된다.")
     public void getCourse__OPEN() {
-        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourse("OPEN");
+        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourseListWithStatus(ZerobaseCourseStatus.OPEN);
         assertThat(inProgressMockList.size()).isEqualTo(2L);
     }
 
@@ -43,7 +44,7 @@ class HomeworkTest {
     @Test
     @DisplayName("현재 시간 기준 OPEN 상태의 강의가 모두 조회된다.")
     public void getCourse__current_OPEN() {
-        List<ZerobaseCourse> inProgressMockList = homework.getOpenZerobaseCourse(LocalDate.now());
+        List<ZerobaseCourse> inProgressMockList = homework.getOpenZerobaseCourseList(LocalDate.now());
         assertThat(inProgressMockList.size()).isEqualTo(1L);
     }
 
@@ -62,7 +63,7 @@ class HomeworkTest {
                         .builder()
                         .id(1L)
                         .name("Java 백엔드 개발자 취업 (2기)")
-                        .status("IN_PROGRESS")
+                        .status(ZerobaseCourseStatus.IN_PROGRESS)
                         .startAt(LocalDate.now().minusMonths(1))
                         .endAt(LocalDate.now().plusMonths(1))
                         .build()),
@@ -70,7 +71,7 @@ class HomeworkTest {
                         .builder()
                         .id(2L)
                         .name("프론트엔드 개발자되기")
-                        .status("IN_PROGRESS")
+                        .status(ZerobaseCourseStatus.IN_PROGRESS)
                         .startAt(LocalDate.now().minusMonths(2))
                         .endAt(LocalDate.now().plusMonths(1))
                         .build()),
@@ -78,7 +79,7 @@ class HomeworkTest {
                         .builder()
                         .id(3L)
                         .name("바로 써먹는 데이터 분석")
-                        .status("CLOSE")
+                        .status(ZerobaseCourseStatus.CLOSE)
                         .startAt(LocalDate.now().minusMonths(2))
                         .endAt(LocalDate.now().minusMonths(1))
                         .build()),
@@ -86,7 +87,7 @@ class HomeworkTest {
                         .builder()
                         .id(4L)
                         .name("직접 만드는 파이썬 자동화 48일")
-                        .status("OPEN")
+                        .status(ZerobaseCourseStatus.OPEN)
                         .startAt(LocalDate.now().minusMonths(1))
                         .endAt(LocalDate.now().plusMonths(1))
                         .build()),
@@ -94,7 +95,7 @@ class HomeworkTest {
                         .builder()
                         .id(5L)
                         .name("Java 백엔드 개발자 취업 (1기)")
-                        .status("OPEN")
+                        .status(ZerobaseCourseStatus.OPEN)
                         .startAt(LocalDate.now().plusMonths(1))
                         .endAt(LocalDate.now().plusMonths(2))
                         .build()),
@@ -102,7 +103,7 @@ class HomeworkTest {
                         .builder()
                         .id(6L)
                         .name("테스트용 강의")
-                        .status("OPEN")
+                        .status(ZerobaseCourseStatus.OPEN)
                         .startAt(LocalDate.now().minusMonths(1))
                         .endAt(LocalDate.now().plusMonths(2))
                         .hidden(true)
