@@ -18,8 +18,7 @@ public class Homework {
 
     public Optional<ZerobaseCourse> getZerobaseCourse(Long id) {
         // TODO: id 가 일치하며, hidden = false 인 강의만 조회되어야 함
-
-        ZerobaseCourse zerobaseCourse = repository.findById(id);
+        ZerobaseCourse zerobaseCourse = findCourse(id);
 
         if (zerobaseCourse != null && !zerobaseCourse.isHidden()) {
             return Optional.of(zerobaseCourse);
@@ -28,29 +27,48 @@ public class Homework {
         return Optional.empty();
     }
 
+
     public List<ZerobaseCourse> getZerobaseCourseListWithStatus(ZerobaseCourseStatus status) {
         // TODO: status가 일치하고, hidden = false 인 강의들이 조회되어야 함
 
-        List<ZerobaseCourse> result = new ArrayList<>();
-        List<ZerobaseCourse> courseList = repository.findAll();
+        List<ZerobaseCourse> allCourses = repository.findAll();
 
-        for (ZerobaseCourse course : courseList) {
-            if (course.getStatus().equals(status) && !course.isHidden()) {
-                result.add(course);
-            }
-        }
+        return findCourses(allCourses, status);
 
-        return result;
     }
+
 
     public List<ZerobaseCourse> getOpenZerobaseCourseList(LocalDate targetDt) {
         // TODO: status = "OPEN" 이고, hidden = false 이며,
         //  startAt <= targetDt && targetDt <= endAt 인 강의만 조회되어야함.
 
-        List<ZerobaseCourse> result = new ArrayList<>();
-        List<ZerobaseCourse> courseList = getZerobaseCourseListWithStatus(ZerobaseCourseStatus.OPEN);
+        List<ZerobaseCourse> allCourses = getZerobaseCourseListWithStatus(ZerobaseCourseStatus.OPEN);
+        return  findOpenCourses(allCourses, targetDt);
 
-        for (ZerobaseCourse course : courseList) {
+    }
+
+
+    private ZerobaseCourse findCourse(Long id) {
+        return repository.findById(id);
+    }
+
+
+    private List<ZerobaseCourse> findCourses(List<ZerobaseCourse> allCourses, ZerobaseCourseStatus status) {
+        List<ZerobaseCourse> result = new ArrayList<>();
+
+        for (ZerobaseCourse course : allCourses) {
+            if (course.getStatus().equals(status) && !course.isHidden()) {
+                result.add(course);
+            }
+        }
+        return result;
+    }
+
+
+    private List<ZerobaseCourse> findOpenCourses (List<ZerobaseCourse> allCourses, LocalDate targetDt){
+        List<ZerobaseCourse> result = new ArrayList<>();
+
+        for (ZerobaseCourse course : allCourses) {
             if (course.getStartAt().isBefore(targetDt) && course.getEndAt().isAfter(targetDt)) {
                 result.add(course);
             }
