@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class Homework {
@@ -18,22 +19,31 @@ public class Homework {
 
     public Optional<ZerobaseCourse> getZerobaseCourse(Long id) {
         // TODO: id 가 일치하며, hidden = false 인 강의만 조회되어야 함
-        ZerobaseCourse zerobaseCourse = findCourse(id);
+        ZerobaseCourse zerobaseCourse = repository.findById(id);
 
-        if (zerobaseCourse != null && !zerobaseCourse.isHidden()) {
-            return Optional.of(zerobaseCourse);
-        }
-
-        return Optional.empty();
+        return Optional.ofNullable(zerobaseCourse)
+                .filter(course -> !zerobaseCourse.isHidden());
+//        if (zerobaseCourse != null && !zerobaseCourse.isHidden()) {
+//            return Optional.of(zerobaseCourse);
+//        }
+//
+//        return Optional.empty();
     }
 
 
-    public List<ZerobaseCourse> getZerobaseCourseListWithStatus(ZerobaseCourseStatus status) {
+    public List<ZerobaseCourse> getZerobaseCoursesBy(ZerobaseCourseStatus status) {
         // TODO: status가 일치하고, hidden = false 인 강의들이 조회되어야 함
-
-        List<ZerobaseCourse> allCourses = repository.findAll();
-
-        return findCourses(allCourses, status);
+        List<ZerobaseCourse> allCourses = repository.findAll().stream()
+                .filter(zerobaseCourse -> !zerobaseCourse.isHidden() && zerobaseCourse.getStatus().equals(status))
+                .collect(Collectors.toList());
+//        List<ZerobaseCourse> allCourses = repository.findAll();
+//
+//        for (ZerobaseCourse course : allCourses) {
+//            if (course.getStatus().equals(status) && !course.isHidden()) {
+//                result.add(course);
+//            }
+//        }
+        return allCourses;
 
     }
 
@@ -42,38 +52,15 @@ public class Homework {
         // TODO: status = "OPEN" 이고, hidden = false 이며,
         //  startAt <= targetDt && targetDt <= endAt 인 강의만 조회되어야함.
 
-        List<ZerobaseCourse> allCourses = getZerobaseCourseListWithStatus(ZerobaseCourseStatus.OPEN);
-        return  findOpenCourses(allCourses, targetDt);
+        List<ZerobaseCourse> allCourses = getZerobaseCoursesBy(ZerobaseCourseStatus.OPEN).stream()
+                .filter(course -> course.getStartAt().isBefore(targetDt) && course.getEndAt().isAfter(targetDt))
+                .collect(Collectors.toList());
+
+
+        return allCourses;
 
     }
 
 
-    private ZerobaseCourse findCourse(Long id) {
-        return repository.findById(id);
-    }
 
-
-    private List<ZerobaseCourse> findCourses(List<ZerobaseCourse> allCourses, ZerobaseCourseStatus status) {
-        List<ZerobaseCourse> result = new ArrayList<>();
-
-        for (ZerobaseCourse course : allCourses) {
-            if (course.getStatus().equals(status) && !course.isHidden()) {
-                result.add(course);
-            }
-        }
-        return result;
-    }
-
-
-    private List<ZerobaseCourse> findOpenCourses (List<ZerobaseCourse> allCourses, LocalDate targetDt){
-        List<ZerobaseCourse> result = new ArrayList<>();
-
-        for (ZerobaseCourse course : allCourses) {
-            if (course.getStartAt().isBefore(targetDt) && course.getEndAt().isAfter(targetDt)) {
-                result.add(course);
-            }
-        }
-
-        return result;
-    }
 }

@@ -22,21 +22,21 @@ class HomeworkTest {
     @Test
     @DisplayName("IN_PROGRESS 상태의 강의가 모두 조회된다.")
     public void getCourse__IN_PROGRESS() {
-        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourseListWithStatus(ZerobaseCourseStatus.IN_PROGRESS);
+        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCoursesBy(ZerobaseCourseStatus.IN_PROGRESS);
         assertThat(inProgressMockList.size()).isEqualTo(2L);
     }
 
     @Test
     @DisplayName("CLOSE 상태의 강의가 모두 조회된다.")
     public void getCourse__CLOSE() {
-        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourseListWithStatus(ZerobaseCourseStatus.CLOSE);
+        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCoursesBy(ZerobaseCourseStatus.CLOSE);
         assertThat(inProgressMockList.size()).isEqualTo(1L);
     }
 
     @Test
     @DisplayName("OPEN 상태의 강의가 모두 조회된다.")
     public void getCourse__OPEN() {
-        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCourseListWithStatus(ZerobaseCourseStatus.OPEN);
+        List<ZerobaseCourse> inProgressMockList = homework.getZerobaseCoursesBy(ZerobaseCourseStatus.OPEN);
         assertThat(inProgressMockList.size()).isEqualTo(2L);
     }
 
